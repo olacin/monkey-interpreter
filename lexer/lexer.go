@@ -1,6 +1,10 @@
 package lexer
 
-import "github.com/olacin/monkey-interpreter/token"
+import (
+	"bytes"
+
+	"github.com/olacin/monkey-interpreter/token"
+)
 
 type Lexer struct {
 	input        string
@@ -62,6 +66,31 @@ func (l *Lexer) readNumber() string {
 	return l.input[pos:l.position]
 }
 
+func (l *Lexer) readString() string {
+	var str bytes.Buffer
+	for {
+		l.readChar()
+		prevCharIndex := l.position - 1
+		// EOF
+		if l.ch == 0 {
+			break
+		}
+		if l.ch == '"' {
+			// Escape literal (\")
+			if prevCharIndex >= 0 && prevCharIndex < len(l.input) {
+				if l.input[prevCharIndex] == '\\' {
+					str.Truncate(str.Len() - 1)
+					str.WriteByte(l.ch)
+					continue
+				}
+			}
+			break
+		}
+		str.WriteByte(l.ch)
+	}
+	return str.String()
+}
+
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
@@ -108,6 +137,9 @@ func (l *Lexer) NextToken() token.Token {
 		tok = token.New(token.LBRACE, l.ch)
 	case '}':
 		tok = token.New(token.RBRACE, l.ch)
+	case '"':
+		tok.Type = token.STRING
+		tok.Literal = l.readString()
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
