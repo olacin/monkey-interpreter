@@ -45,6 +45,8 @@ const (
 	FALSE    = "FALSE"
 
 	STRING = "STRING"
+
+	COLON = ";"
 )
 
 var keywords = map[string]TokenType{
