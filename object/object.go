@@ -36,6 +36,7 @@ const (
 	BUILTIN_OBJ      = "BUILTIN"
 	ARRAY_OBJ        = "ARRAY"
 	HASH_OBJ         = "HASH"
+	QUOTE_OBJ        = "QUOTE"
 )
 
 type Integer struct {
@@ -173,3 +174,10 @@ func (h *Hash) Inspect() string {
 
 	return out.String()
 }
+
+type Quote struct {
+	Node ast.Node
+}
+
+func (q *Quote) Type() ObjectType { return QUOTE_OBJ }
+func (q *Quote) Inspect() string  { return fmt.Sprintf("QUOTE(%s)", q.Node.String()) }
