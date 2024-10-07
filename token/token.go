@@ -47,6 +47,8 @@ const (
 	STRING = "STRING"
 
 	COLON = ";"
+
+	MACRO = "MACRO"
 )
 
 var keywords = map[string]TokenType{
@@ -57,6 +59,7 @@ var keywords = map[string]TokenType{
 	"return": RETURN,
 	"true":   TRUE,
 	"false":  FALSE,
+	"macro":  MACRO,
 }
 
 func New(tokenType TokenType, ch byte) Token {
